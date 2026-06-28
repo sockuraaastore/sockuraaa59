@@ -87,7 +87,7 @@ export default function ProductCard({ product, onViewDetail }: ProductCardProps)
           className="inline-flex items-center justify-center h-9 rounded-lg px-4 text-sm w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25 transition-colors"
         >
           <Eye size={16} />
-          View and Add to Cart
+          مشاهده و افزودن به سبد خرید
         </button>
       </div>
     </motion.div>
