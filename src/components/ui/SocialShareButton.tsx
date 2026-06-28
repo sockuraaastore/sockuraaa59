@@ -16,10 +16,16 @@ const socialLinks = [
   {
     name: 'روبیکا',
     url: 'http://rubika.ir/sockuraaa',
-    color: '#E91E63',
+    color: 'transparent',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l7 4.5-7 4.5z"/>
+      <svg viewBox="0 0 100 100" className="w-6 h-6">
+        <polygon points="50,2 93,27 93,73 50,98 7,73 7,27" fill="#FFFFFF"/>
+        <polygon points="50,2 93,27 50,52 7,27" fill="#E41E8A"/>
+        <polygon points="93,27 93,73 50,52" fill="#7B2D8E"/>
+        <polygon points="93,73 50,98 50,52" fill="#FF5722"/>
+        <polygon points="50,98 7,73 50,52" fill="#4CAF50"/>
+        <polygon points="7,73 7,27 50,52" fill="#2196F3"/>
+        <polygon points="7,27 50,2 50,52" fill="#FFC107"/>
       </svg>
     ),
   },
