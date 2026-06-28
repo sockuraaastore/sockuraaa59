@@ -1,7 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
-import { RippleButton } from '@/components/ui/multi-type-ripple-buttons'
 import { Eye } from 'lucide-react'
 import type { Product } from '@/types'
 
@@ -82,17 +81,14 @@ export default function ProductCard({ product, onViewDetail }: ProductCardProps)
           </div>
         )}
 
-        <RippleButton
-          variant="hover"
-          hoverBaseColor="#ec4899"
-          hoverRippleColor="rgba(236, 72, 153, 0.466)"
+        <button
           onClick={() => onViewDetail(product)}
           disabled={isOutOfStock}
-          className="inline-flex items-center justify-center h-9 rounded-lg px-4 text-sm w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25"
+          className="inline-flex items-center justify-center h-9 rounded-lg px-4 text-sm w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25 transition-colors"
         >
           <Eye size={16} />
-          مشاهده و انتخاب سایز
-        </RippleButton>
+          View and Add to Cart
+        </button>
       </div>
     </motion.div>
   )

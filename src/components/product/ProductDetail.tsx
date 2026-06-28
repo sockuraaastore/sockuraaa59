@@ -178,6 +178,9 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
           )}
 
           <RippleButton
+            variant="hover"
+            hoverBaseColor="#ec4899"
+            hoverRippleColor="rgba(236, 72, 153, 0.466)"
             onClick={handleAddToCart}
             disabled={isOutOfStock || added}
             className="inline-flex items-center justify-center h-12 rounded-xl px-8 text-base w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25"
