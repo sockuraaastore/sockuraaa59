@@ -100,6 +100,9 @@ export default function AdminOrders() {
               <div className="text-sm text-dark-300 mb-1">
                 📍 {order.address}
               </div>
+              <div className="text-sm text-dark-300 mb-1">
+                📮 {order.postalCode}
+              </div>
 
               <div className="flex items-center justify-between mt-3 mb-3">
                 <span className="font-bold text-pink">
