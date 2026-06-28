@@ -4,6 +4,7 @@ import { useProducts } from '@/hooks/useProducts'
 import LoginScreen from '@/components/auth/LoginScreen'
 import Layout from '@/components/layout/Layout'
 import HeroBanner from '@/components/home/HeroBanner'
+import WelcomeHero from '@/components/home/WelcomeHero'
 import ProductGrid from '@/components/home/ProductGrid'
 import ProductDetail from '@/components/product/ProductDetail'
 import SearchView from '@/components/search/SearchView'
@@ -89,6 +90,7 @@ export default function App() {
       case 'home':
         return (
           <>
+            <WelcomeHero />
             <HeroBanner onBannerClick={handleViewBanner} />
             <ProductGrid products={products} onViewDetail={handleViewProduct} />
           </>
