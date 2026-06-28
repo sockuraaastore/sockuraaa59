@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import AdminGate from '@/components/auth/AdminGate'
+import SocialShareButton from '@/components/ui/SocialShareButton'
 import { Shield, ChevronLeft, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ViewType } from '@/types'
@@ -42,6 +43,8 @@ export default function Header({ currentView, onNavigate }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            <SocialShareButton />
+
             {currentView !== 'home' && currentView !== 'admin' && (
               <Button
                 variant="ghost"
