@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useOrders } from '@/hooks/useOrders'
 import { useProducts } from '@/hooks/useProducts'
+import { RippleButton } from '@/components/ui/multi-type-ripple-buttons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -9,13 +10,14 @@ import { CheckCircle, XCircle, Eye, Trash2, MessageSquare } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export default function AdminOrders() {
-  const { getActiveOrders, approveOrder, rejectOrder, adminDeleteOrder } = useOrders()
+  const { getActiveOrders, approveOrder, rejectOrder, adminDeleteOrder, fetchReceipt } = useOrders()
   const { deductStock } = useProducts()
   const orders = getActiveOrders()
 
   const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null)
   const [message, setMessage] = useState('')
   const [showReceipt, setShowReceipt] = useState<string | null>(null)
+  const [receiptLoading, setReceiptLoading] = useState(false)
   const [showMessageForm, setShowMessageForm] = useState<{ orderId: string; action: 'approved' | 'rejected' } | null>(null)
 
   const handleApprove = (orderId: string) => {
@@ -36,7 +38,7 @@ export default function AdminOrders() {
       const result = await approveOrder(showMessageForm.orderId, message)
       if (!result.success) { alert('خطا در تایید سفارش: ' + (result.error || 'ناشناخته')); return }
       for (const item of order.items) {
-        await deductStock(item.productId, item.quantity)
+        await deductStock(item.productId, item.quantity, item.sizeName || undefined)
       }
     } else {
       const result = await rejectOrder(showMessageForm.orderId, message)
@@ -91,7 +93,7 @@ export default function AdminOrders() {
               </div>
 
               <div className="text-sm text-dark-300 mb-2">
-                {order.items.map(i => `${i.productName} × ${i.quantity}`).join('، ')}
+                {order.items.map(i => `${i.productName}${i.sizeName ? ` (${i.sizeName})` : ''} × ${i.quantity}`).join('، ')}
               </div>
 
               <div className="text-sm text-dark-300 mb-1">
@@ -124,7 +126,13 @@ export default function AdminOrders() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setShowReceipt(order.receiptImageBase64)}
+                  onClick={async () => {
+                    setReceiptLoading(true)
+                    setShowReceipt('loading')
+                    const receipt = await fetchReceipt(order.id)
+                    setShowReceipt(receipt || '')
+                    setReceiptLoading(false)
+                  }}
                   className="flex-1 gap-1"
                 >
                   <Eye size={14} />
@@ -133,23 +141,26 @@ export default function AdminOrders() {
 
                 {order.status === 'pending' && (
                   <>
-                    <Button
-                      size="sm"
+                    <RippleButton
+                      variant="hover"
+                      hoverBaseColor="#22c55e"
+                      hoverRippleColor="rgba(34, 197, 94, 0.466)"
                       onClick={() => handleApprove(order.id)}
-                      className="gap-1 bg-green-500 hover:bg-green-600"
+                      className="inline-flex items-center justify-center h-8 rounded-lg px-3 text-xs gap-1 bg-green-500 text-white hover:bg-green-600"
                     >
                       <CheckCircle size={14} />
                       تایید
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
+                    </RippleButton>
+                    <RippleButton
+                      variant="hover"
+                      hoverBaseColor="#ef4444"
+                      hoverRippleColor="rgba(239, 68, 68, 0.466)"
                       onClick={() => handleReject(order.id)}
-                      className="gap-1"
+                      className="inline-flex items-center justify-center h-8 rounded-lg px-3 text-xs gap-1 bg-red-500 text-white hover:bg-red-600"
                     >
                       <XCircle size={14} />
                       رد
-                    </Button>
+                    </RippleButton>
                   </>
                 )}
 
@@ -172,9 +183,14 @@ export default function AdminOrders() {
           <DialogHeader>
             <DialogTitle>رسید پرداخت</DialogTitle>
           </DialogHeader>
-          {showReceipt && (
+          {showReceipt === 'loading' ? (
+            <div className="flex items-center justify-center py-8">
+              <span className="animate-spin text-pink">⏳</span>
+              <span className="mr-2 text-dark-300">در حال بارگذاری...</span>
+            </div>
+          ) : showReceipt ? (
             <img src={showReceipt} alt="رسید" className="w-full rounded-xl" />
-          )}
+          ) : null}
         </DialogContent>
       </Dialog>
 

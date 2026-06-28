@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { ShoppingCart, Plus, Minus, Eye } from 'lucide-react'
+import { RippleButton } from '@/components/ui/multi-type-ripple-buttons'
+import { Eye } from 'lucide-react'
 import type { Product } from '@/types'
-import { useCart } from '@/hooks/useCart'
 
 interface ProductCardProps {
   product: Product
@@ -12,20 +11,12 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onViewDetail }: ProductCardProps) {
-  const [quantity, setQuantity] = useState(1)
-  const { addToCart } = useCart()
-  const [added, setAdded] = useState(false)
+  const totalStock = product.sizes.length > 0
+    ? product.sizes.reduce((sum, s) => sum + s.stockQuantity, 0)
+    : product.stockQuantity
 
-  const isOutOfStock = product.stockQuantity === 0
-  const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 5
-
-  const handleAddToCart = () => {
-    const success = addToCart(product.id, quantity)
-    if (success) {
-      setAdded(true)
-      setTimeout(() => setAdded(false), 2000)
-    }
-  }
+  const isOutOfStock = totalStock === 0
+  const isLowStock = totalStock > 0 && totalStock <= 5
 
   return (
     <motion.div
@@ -56,10 +47,10 @@ export default function ProductCard({ product, onViewDetail }: ProductCardProps)
             <Badge variant="outOfStock">تموم شده</Badge>
           )}
           {isLowStock && (
-            <Badge variant="warning">{product.stockQuantity} تا مونده</Badge>
+            <Badge variant="warning">{totalStock} تا مونده</Badge>
           )}
           {!isOutOfStock && !isLowStock && (
-            <Badge variant="stock">{product.stockQuantity} موجود</Badge>
+            <Badge variant="stock">{totalStock} موجود</Badge>
           )}
         </div>
 
@@ -81,48 +72,27 @@ export default function ProductCard({ product, onViewDetail }: ProductCardProps)
           </div>
         </div>
 
-        {!isOutOfStock && (
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-sm text-dark-300">تعداد:</span>
-            <div className="flex items-center border border-pink-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-8 h-8 flex items-center justify-center hover:bg-pink-50 transition-colors"
-              >
-                <Minus size={14} />
-              </button>
-              <span className="w-10 text-center font-medium text-dark">{quantity}</span>
-              <button
-                onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                className="w-8 h-8 flex items-center justify-center hover:bg-pink-50 transition-colors"
-              >
-                <Plus size={14} />
-              </button>
-            </div>
+        {product.sizes.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-4">
+            {product.sizes.map(s => (
+              <Badge key={s.sizeName} variant={s.stockQuantity > 0 ? 'outline' : 'outOfStock'} className="text-[10px]">
+                {s.sizeName}
+              </Badge>
+            ))}
           </div>
         )}
 
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onViewDetail(product)}
-            className="flex-1 gap-1"
-          >
-            <Eye size={14} />
-            مشاهده
-          </Button>
-
-          <Button
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={isOutOfStock || added}
-            className="flex-1 gap-1"
-          >
-            <ShoppingCart size={14} />
-            {added ? 'اضافه شد!' : 'افزودن'}
-          </Button>
-        </div>
+        <RippleButton
+          variant="hover"
+          hoverBaseColor="#ec4899"
+          hoverRippleColor="rgba(236, 72, 153, 0.466)"
+          onClick={() => onViewDetail(product)}
+          disabled={isOutOfStock}
+          className="inline-flex items-center justify-center h-9 rounded-lg px-4 text-sm w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25"
+        >
+          <Eye size={16} />
+          مشاهده و انتخاب سایز
+        </RippleButton>
       </div>
     </motion.div>
   )

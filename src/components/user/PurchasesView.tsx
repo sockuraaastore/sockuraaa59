@@ -56,7 +56,7 @@ export default function PurchasesView() {
                 </div>
 
                 <div className="text-sm text-dark mb-2">
-                  {order.items.map(i => `${i.productName} × ${i.quantity}`).join('، ')}
+                  {order.items.map(i => `${i.productName}${i.sizeName ? ` (${i.sizeName})` : ''} × ${i.quantity}`).join('، ')}
                 </div>
 
                 <div className="font-bold text-pink text-sm mb-2">

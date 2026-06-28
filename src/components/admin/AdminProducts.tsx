@@ -2,16 +2,19 @@ import React, { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useProducts } from '@/hooks/useProducts'
 import { useCategories } from '@/hooks/useCategories'
+import { useSizes } from '@/hooks/useSizes'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2, Edit, Package, X } from 'lucide-react'
 import { compressImage } from '@/lib/utils'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { ProductSize } from '@/types'
 
 export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
   const { categories, addCategory } = useCategories()
+  const { sizes } = useSizes()
   const [showAdd, setShowAdd] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
 
@@ -24,6 +27,7 @@ export default function AdminProducts() {
   const [category, setCategory] = useState<string[]>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [showNewCategory, setShowNewCategory] = useState(false)
+  const [productSizes, setProductSizes] = useState<{ sizeName: string; stockQuantity: number }[]>([])
 
   const resetForm = () => {
     setName('')
@@ -35,6 +39,7 @@ export default function AdminProducts() {
     setCategory([])
     setNewCategoryName('')
     setShowNewCategory(false)
+    setProductSizes([])
     setEditId(null)
   }
 
@@ -82,15 +87,23 @@ export default function AdminProducts() {
   }
 
   const handleAdd = async () => {
-    if (!name || !price || !stockQuantity) return
+    if (!name || !price) return
     const finalImages = imageUrls.length > 0 ? imageUrls : [`https://picsum.photos/seed/${Date.now()}/400/400`]
+    const sizes: ProductSize[] = productSizes.map((s, i) => ({
+      id: '',
+      productId: '',
+      sizeName: s.sizeName,
+      stockQuantity: s.stockQuantity,
+      createdAt: ''
+    }))
     const result = await addProduct({
       name,
       description,
       price: parseInt(price),
-      stockQuantity: parseInt(stockQuantity),
+      stockQuantity: sizes.length > 0 ? 0 : parseInt(stockQuantity || '0'),
       imageUrls: finalImages,
       category,
+      sizes,
     })
     if (!result.success) {
       alert('خطا در ذخیره محصول: ' + (result.error || 'ناشناخته'))
@@ -108,18 +121,27 @@ export default function AdminProducts() {
     setStockQuantity(product.stockQuantity.toString())
     setImageUrls([...product.imageUrls])
     setCategory(Array.isArray(product.category) ? [...product.category] : [product.category])
+    setProductSizes(product.sizes.map(s => ({ sizeName: s.sizeName, stockQuantity: s.stockQuantity })))
     setShowAdd(true)
   }
 
   const handleUpdate = async () => {
-    if (!editId || !name || !price || !stockQuantity) return
+    if (!editId || !name || !price) return
+    const sizes: ProductSize[] = productSizes.map((s, i) => ({
+      id: '',
+      productId: editId,
+      sizeName: s.sizeName,
+      stockQuantity: s.stockQuantity,
+      createdAt: ''
+    }))
     const result = await updateProduct(editId, {
       name,
       description,
       price: parseInt(price),
-      stockQuantity: parseInt(stockQuantity),
+      stockQuantity: sizes.length > 0 ? 0 : parseInt(stockQuantity || '0'),
       imageUrls,
       category,
+      sizes,
     })
     if (!result.success) {
       alert('خطا در ذخیره تغییرات: ' + (result.error || 'ناشناخته'))
@@ -263,6 +285,69 @@ export default function AdminProducts() {
               )}
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-dark mb-2">سایزها (اختیاری)</label>
+              <p className="text-xs text-dark-300 mb-2">اگر سایز اضافه کنید، مشتریان باید سایز را انتخاب کنند</p>
+              <div className="space-y-2">
+                {sizes.map((size) => {
+                  const existing = productSizes.find(s => s.sizeName === size.name)
+                  const isEnabled = !!existing
+                  return (
+                    <div key={size.id} className="flex items-center gap-2">
+                      <label
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm cursor-pointer border transition-colors flex-1 ${
+                          isEnabled
+                            ? 'bg-pink-50 border-pink-300'
+                            : 'bg-white border-pink-200 hover:border-pink'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isEnabled}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setProductSizes([...productSizes, { sizeName: size.name, stockQuantity: 0 }])
+                            } else {
+                              setProductSizes(productSizes.filter(s => s.sizeName !== size.name))
+                            }
+                          }}
+                          className="sr-only"
+                        />
+                        <span className="font-medium">{size.name}</span>
+                      </label>
+                      {isEnabled && (
+                        <Input
+                          type="number"
+                          value={existing?.stockQuantity || 0}
+                          onChange={(e) => {
+                            setProductSizes(productSizes.map(s =>
+                              s.sizeName === size.name
+                                ? { ...s, stockQuantity: parseInt(e.target.value) || 0 }
+                                : s
+                            ))
+                          }}
+                          placeholder="موجودی"
+                          className="w-24"
+                          dir="ltr"
+                        />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              {productSizes.length === 0 && (
+                <div className="mt-2">
+                  <Input
+                    value={stockQuantity}
+                    onChange={(e) => setStockQuantity(e.target.value)}
+                    placeholder="تعداد موجودی کل"
+                    type="number"
+                    dir="ltr"
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-2">
               <Button onClick={editId ? handleUpdate : handleAdd} className="flex-1">
                 {editId ? 'ذخیره تغییرات' : 'افزودن'}
@@ -289,9 +374,17 @@ export default function AdminProducts() {
                 <h4 className="font-bold text-dark truncate">{product.name}</h4>
                 <p className="text-pink font-medium">{product.price.toLocaleString('fa-IR')} تومان</p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <Badge variant={product.stockQuantity === 0 ? 'outOfStock' : 'stock'}>
-                    {product.stockQuantity === 0 ? 'تموم شده' : `${product.stockQuantity} موجود`}
-                  </Badge>
+                  {product.sizes.length > 0 ? (
+                    product.sizes.map(s => (
+                      <Badge key={s.sizeName} variant={s.stockQuantity === 0 ? 'outOfStock' : 'stock'}>
+                        {s.sizeName}: {s.stockQuantity}
+                      </Badge>
+                    ))
+                  ) : (
+                    <Badge variant={product.stockQuantity === 0 ? 'outOfStock' : 'stock'}>
+                      {product.stockQuantity === 0 ? 'تموم شده' : `${product.stockQuantity} موجود`}
+                    </Badge>
+                  )}
                   <Badge variant="secondary">{Array.isArray(product.category) ? product.category.join('، ') : product.category}</Badge>
                   {(product.imageUrls?.length ?? 0) > 1 && (
                     <Badge variant="outline">{product.imageUrls?.length} تصویر</Badge>

@@ -4,22 +4,32 @@ import { getStorageItem, setStorageItem } from '@/store/localStorage'
 
 export function useCart() {
   const [cart, setCart] = useState<CartItem[]>(() =>
-    getStorageItem<CartItem[]>(STORAGE_KEYS.CART, [])
+    getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []).map(item => ({
+      ...item,
+      sizeName: item.sizeName || ''
+    }))
   )
 
   const refresh = useCallback(() => {
-    setCart(getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []))
+    setCart(getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []).map(item => ({
+      ...item,
+      sizeName: item.sizeName || ''
+    })))
   }, [])
 
-  const addToCart = useCallback((productId: string, quantity: number): boolean => {
-    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, [])
-    const existing = currentCart.find(c => c.productId === productId)
+  const addToCart = useCallback((productId: string, quantity: number, sizeName: string): boolean => {
+    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []).map(item => ({
+      ...item,
+      sizeName: item.sizeName || ''
+    }))
+    const existing = currentCart.find(c => c.productId === productId && c.sizeName === sizeName)
 
     if (existing) {
       existing.quantity += quantity
     } else {
       currentCart.push({
         productId,
+        sizeName,
         quantity,
         addedAt: new Date().toISOString(),
       })
@@ -30,9 +40,12 @@ export function useCart() {
     return true
   }, [refresh])
 
-  const updateQuantity = useCallback((productId: string, quantity: number): boolean => {
-    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, [])
-    const idx = currentCart.findIndex(c => c.productId === productId)
+  const updateQuantity = useCallback((productId: string, sizeName: string, quantity: number): boolean => {
+    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []).map(item => ({
+      ...item,
+      sizeName: item.sizeName || ''
+    }))
+    const idx = currentCart.findIndex(c => c.productId === productId && c.sizeName === sizeName)
     if (idx !== -1) {
       if (quantity <= 0) {
         currentCart.splice(idx, 1)
@@ -46,9 +59,12 @@ export function useCart() {
     return true
   }, [refresh])
 
-  const removeFromCart = useCallback((productId: string) => {
-    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, [])
-    setStorageItem(STORAGE_KEYS.CART, currentCart.filter(c => c.productId !== productId))
+  const removeFromCart = useCallback((productId: string, sizeName: string) => {
+    const currentCart = getStorageItem<CartItem[]>(STORAGE_KEYS.CART, []).map(item => ({
+      ...item,
+      sizeName: item.sizeName || ''
+    }))
+    setStorageItem(STORAGE_KEYS.CART, currentCart.filter(c => !(c.productId === productId && c.sizeName === sizeName)))
     refresh()
   }, [refresh])
 

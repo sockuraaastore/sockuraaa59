@@ -13,6 +13,7 @@ export interface Product {
   stockQuantity: number
   imageUrls: string[]
   category: string[]
+  sizes: ProductSize[]
   createdAt: string
 }
 
@@ -22,8 +23,23 @@ export interface Category {
   createdAt: string
 }
 
+export interface Size {
+  id: string
+  name: string
+  createdAt: string
+}
+
+export interface ProductSize {
+  id: string
+  productId: string
+  sizeName: string
+  stockQuantity: number
+  createdAt: string
+}
+
 export interface CartItem {
   productId: string
+  sizeName: string
   quantity: number
   addedAt: string
 }
@@ -31,6 +47,7 @@ export interface CartItem {
 export interface OrderItem {
   productId: string
   productName: string
+  sizeName: string
   quantity: number
   unitPrice: number
 }

@@ -12,6 +12,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock1b/400/400',
     ],
     category: ['ساق بلند'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
   {
@@ -25,6 +26,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock2b/400/400',
     ],
     category: ['اسپرت'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
   {
@@ -38,6 +40,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock3b/400/400',
     ],
     category: ['فانتزی'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
   {
@@ -51,6 +54,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock4b/400/400',
     ],
     category: ['ساق کوتاه'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
   {
@@ -64,6 +68,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock5b/400/400',
     ],
     category: ['زمستانی'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
   {
@@ -77,6 +82,7 @@ export const seedProducts: Product[] = [
       'https://picsum.photos/seed/sock6b/400/400',
     ],
     category: ['مجلسی'],
+    sizes: [],
     createdAt: new Date().toISOString(),
   },
 ]

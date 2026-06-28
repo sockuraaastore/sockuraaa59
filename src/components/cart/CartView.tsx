@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useCart } from '@/hooks/useCart'
 import { useProducts } from '@/hooks/useProducts'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
 import type { ViewType } from '@/types'
 
@@ -49,9 +50,9 @@ export default function CartView({ onNavigate }: CartViewProps) {
       </motion.h2>
 
       <div className="space-y-4 mb-8">
-        {cartItems.map(({ productId, quantity, product }) => (
+        {cartItems.map(({ productId, sizeName, quantity, product }) => (
           <motion.div
-            key={productId}
+            key={`${productId}-${sizeName}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="bg-white rounded-2xl p-4 flex gap-4 border border-pink-100 shadow-sm"
@@ -64,21 +65,24 @@ export default function CartView({ onNavigate }: CartViewProps) {
 
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-dark truncate">{product!.name}</h3>
-              <p className="text-pink font-medium">
+              {sizeName && (
+                <Badge variant="secondary" className="mt-1">{sizeName}</Badge>
+              )}
+              <p className="text-pink font-medium mt-1">
                 {product!.price.toLocaleString('fa-IR')} تومان
               </p>
 
               <div className="flex items-center justify-between mt-2">
                 <div className="flex items-center border border-pink-200 rounded-lg overflow-hidden">
                   <button
-                    onClick={() => updateQuantity(productId, quantity - 1)}
+                    onClick={() => updateQuantity(productId, sizeName, quantity - 1)}
                     className="w-8 h-8 flex items-center justify-center hover:bg-pink-50"
                   >
                     <Minus size={14} />
                   </button>
                   <span className="w-10 text-center font-medium">{quantity}</span>
                   <button
-                    onClick={() => updateQuantity(productId, quantity + 1)}
+                    onClick={() => updateQuantity(productId, sizeName, quantity + 1)}
                     className="w-8 h-8 flex items-center justify-center hover:bg-pink-50"
                   >
                     <Plus size={14} />
@@ -90,7 +94,7 @@ export default function CartView({ onNavigate }: CartViewProps) {
                     {(product!.price * quantity).toLocaleString('fa-IR')} تومان
                   </span>
                   <button
-                    onClick={() => removeFromCart(productId)}
+                    onClick={() => removeFromCart(productId, sizeName)}
                     className="text-red-400 hover:text-red-500 p-1"
                   >
                     <Trash2 size={16} />

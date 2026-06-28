@@ -45,21 +45,21 @@ export default function ProfileView({ onNavigate }: ProfileViewProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-pink-50 rounded-xl p-4 text-center">
-            <Package size={24} className="mx-auto text-pink mb-2" />
-            <div className="text-2xl font-bold text-dark">{myOrders.length}</div>
-            <div className="text-xs text-dark-300">سفارش</div>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="bg-pink-50 rounded-xl p-3 sm:p-4 text-center">
+            <Package size={20} className="mx-auto text-pink mb-1 sm:mb-2" />
+            <div className="text-xl sm:text-2xl font-bold text-dark">{myOrders.length}</div>
+            <div className="text-[10px] sm:text-xs text-dark-300">سفارش</div>
           </div>
-          <div className="bg-pink-50 rounded-xl p-4 text-center">
-            <Clock size={24} className="mx-auto text-pink mb-2" />
-            <div className="text-2xl font-bold text-dark">{myOrders.filter(o => o.status === 'pending').length}</div>
-            <div className="text-xs text-dark-300">در انتظار</div>
+          <div className="bg-pink-50 rounded-xl p-3 sm:p-4 text-center">
+            <Clock size={20} className="mx-auto text-pink mb-1 sm:mb-2" />
+            <div className="text-xl sm:text-2xl font-bold text-dark">{myOrders.filter(o => o.status === 'pending').length}</div>
+            <div className="text-[10px] sm:text-xs text-dark-300">در انتظار</div>
           </div>
-          <div className="bg-pink-50 rounded-xl p-4 text-center">
-            <CheckCircle size={24} className="mx-auto text-pink mb-2" />
-            <div className="text-2xl font-bold text-dark">{myOrders.filter(o => o.status === 'approved').length}</div>
-            <div className="text-xs text-dark-300">تایید شده</div>
+          <div className="bg-pink-50 rounded-xl p-3 sm:p-4 text-center">
+            <CheckCircle size={20} className="mx-auto text-pink mb-1 sm:mb-2" />
+            <div className="text-xl sm:text-2xl font-bold text-dark">{myOrders.filter(o => o.status === 'approved').length}</div>
+            <div className="text-[10px] sm:text-xs text-dark-300">تایید شده</div>
           </div>
         </div>
 
@@ -123,7 +123,7 @@ export default function ProfileView({ onNavigate }: ProfileViewProps) {
                 </div>
 
                 <div className="text-sm text-dark mb-2">
-                  {order.items.map(i => `${i.productName} × ${i.quantity}`).join('، ')}
+                  {order.items.map(i => `${i.productName}${i.sizeName ? ` (${i.sizeName})` : ''} × ${i.quantity}`).join('، ')}
                 </div>
 
                 <div className="flex items-center justify-between">

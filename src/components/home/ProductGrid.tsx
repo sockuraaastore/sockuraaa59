@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import ProductCard from '@/components/product/ProductCard'
 import { useCategories } from '@/hooks/useCategories'
+import { useSizes } from '@/hooks/useSizes'
 import type { Product } from '@/types'
 
 interface ProductGridProps {
@@ -11,11 +12,21 @@ interface ProductGridProps {
 
 export default function ProductGrid({ products, onViewDetail }: ProductGridProps) {
   const { categories } = useCategories()
+  const { sizes } = useSizes()
   const [activeCategory, setActiveCategory] = useState<string>('')
+  const [activeSize, setActiveSize] = useState<string>('')
 
-  const filteredProducts = activeCategory
-    ? products.filter(p => Array.isArray(p.category) ? p.category.includes(activeCategory) : p.category === activeCategory)
-    : products
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = activeCategory
+      ? (Array.isArray(p.category) ? p.category.includes(activeCategory) : p.category === activeCategory)
+      : true
+
+    const matchesSize = activeSize
+      ? p.sizes.some(s => s.sizeName === activeSize && s.stockQuantity > 0)
+      : true
+
+    return matchesCategory && matchesSize
+  })
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-12">
@@ -28,7 +39,7 @@ export default function ProductGrid({ products, onViewDetail }: ProductGridProps
         <p className="text-dark-300">مجموعه متنوع جوراب‌های با کیفیت</p>
       </motion.div>
 
-      <div className="flex gap-2 overflow-x-auto pb-4 mb-8 justify-center flex-wrap">
+      <div className="flex gap-2 overflow-x-auto touch-scroll pb-4 mb-4 flex-nowrap justify-start md:justify-center">
         <button
           onClick={() => setActiveCategory('')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
@@ -53,6 +64,34 @@ export default function ProductGrid({ products, onViewDetail }: ProductGridProps
           </button>
         ))}
       </div>
+
+      {sizes.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto touch-scroll pb-4 mb-8 flex-nowrap justify-start md:justify-center">
+          <button
+            onClick={() => setActiveSize('')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+              activeSize === ''
+                ? 'bg-pink text-white shadow-lg shadow-pink/25'
+                : 'bg-white text-dark border border-pink-200 hover:border-pink-400'
+            }`}
+          >
+            همه سایزها
+          </button>
+          {sizes.map((size) => (
+            <button
+              key={size.id}
+              onClick={() => setActiveSize(size.name)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                activeSize === size.name
+                  ? 'bg-pink text-white shadow-lg shadow-pink/25'
+                  : 'bg-white text-dark border border-pink-200 hover:border-pink-400'
+              }`}
+            >
+              {size.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product, index) => (

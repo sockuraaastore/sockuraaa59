@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/hooks/useCart'
+import { RippleButton } from '@/components/ui/multi-type-ripple-buttons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import CommentSection from './CommentSection'
@@ -17,11 +18,17 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
   const { addToCart } = useCart()
   const [added, setAdded] = useState(false)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [selectedSize, setSelectedSize] = useState<string>('')
 
-  const isOutOfStock = product.stockQuantity === 0
+  const hasSizes = product.sizes.length > 0
+  const selectedSizeObj = hasSizes ? product.sizes.find(s => s.sizeName === selectedSize) : null
+  const sizeStock = selectedSizeObj ? selectedSizeObj.stockQuantity : product.stockQuantity
+  const isOutOfStock = hasSizes ? !selectedSize || sizeStock === 0 : product.stockQuantity === 0
+  const isLowStock = sizeStock > 0 && sizeStock <= 5
 
   const handleAddToCart = () => {
-    const success = addToCart(product.id, quantity)
+    const sizeName = hasSizes ? selectedSize : ''
+    const success = addToCart(product.id, quantity, sizeName)
     if (success) {
       setAdded(true)
       setTimeout(() => setAdded(false), 2000)
@@ -101,13 +108,39 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
 
           <p className="text-dark-300 mb-6 leading-relaxed">{product.description}</p>
 
+          {hasSizes && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-dark mb-2">سایز:</label>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map(size => (
+                  <button
+                    key={size.sizeName}
+                    onClick={() => setSelectedSize(size.sizeName)}
+                    disabled={size.stockQuantity === 0}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                      selectedSize === size.sizeName
+                        ? 'bg-pink text-white shadow-lg shadow-pink/25'
+                        : size.stockQuantity === 0
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed line-through'
+                        : 'bg-white text-dark border-2 border-pink-200 hover:border-pink'
+                    }`}
+                  >
+                    {size.sizeName}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mb-6">
             {isOutOfStock ? (
-              <Badge variant="outOfStock" className="text-base px-4 py-1">تموم شده</Badge>
-            ) : product.stockQuantity <= 5 ? (
-              <Badge variant="warning" className="text-base px-4 py-1">{product.stockQuantity} تا مونده</Badge>
+              <Badge variant="outOfStock" className="text-base px-4 py-1">
+                {hasSizes && !selectedSize ? 'سایز را انتخاب کنید' : 'تموم شده'}
+              </Badge>
+            ) : isLowStock ? (
+              <Badge variant="warning" className="text-base px-4 py-1">{sizeStock} تا مونده</Badge>
             ) : (
-              <Badge variant="stock" className="text-base px-4 py-1">{product.stockQuantity} عدد موجود</Badge>
+              <Badge variant="stock" className="text-base px-4 py-1">{sizeStock} عدد موجود</Badge>
             )}
           </div>
 
@@ -135,7 +168,7 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
                 </button>
                 <span className="w-12 text-center font-bold text-dark text-lg">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                  onClick={() => setQuantity(Math.min(sizeStock, quantity + 1))}
                   className="w-10 h-10 flex items-center justify-center hover:bg-pink-50 transition-colors"
                 >
                   <Plus size={16} />
@@ -144,15 +177,14 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
             </div>
           )}
 
-          <Button
-            size="lg"
+          <RippleButton
             onClick={handleAddToCart}
             disabled={isOutOfStock || added}
-            className="w-full gap-2"
+            className="inline-flex items-center justify-center h-12 rounded-xl px-8 text-base w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25"
           >
             <ShoppingCart size={20} />
             {added ? 'با موفقیت اضافه شد!' : 'افزودن به سبد خرید'}
-          </Button>
+          </RippleButton>
         </motion.div>
       </div>
 

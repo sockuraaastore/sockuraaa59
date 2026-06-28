@@ -6,6 +6,7 @@ import { useOrders } from '@/hooks/useOrders'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { CreditCard, Upload, CheckCircle, ArrowRight } from 'lucide-react'
 import type { ViewType } from '@/types'
 
@@ -63,6 +64,7 @@ export default function CheckoutForm({ onNavigate, onComplete }: CheckoutFormPro
       items: cartItems.map(item => ({
         productId: item.productId,
         productName: item.product!.name,
+        sizeName: item.sizeName || '',
         quantity: item.quantity,
         unitPrice: item.product!.price,
       })),
@@ -103,9 +105,12 @@ export default function CheckoutForm({ onNavigate, onComplete }: CheckoutFormPro
 
         <div className="bg-white rounded-2xl p-6 border border-pink-100 mb-6">
           <h3 className="font-bold text-dark mb-4">خلاصه سفارش</h3>
-          {cartItems.map(({ productId, quantity, product }) => (
-            <div key={productId} className="flex justify-between py-2 border-b border-pink-50 last:border-0">
-              <span className="text-dark">{product!.name} × {quantity}</span>
+          {cartItems.map(({ productId, sizeName, quantity, product }) => (
+            <div key={`${productId}-${sizeName}`} className="flex justify-between py-2 border-b border-pink-50 last:border-0">
+              <div className="flex items-center gap-2">
+                <span className="text-dark">{product!.name} × {quantity}</span>
+                {sizeName && <Badge variant="secondary" className="text-[10px]">{sizeName}</Badge>}
+              </div>
               <span className="font-medium text-dark">{(product!.price * quantity).toLocaleString('fa-IR')} تومان</span>
             </div>
           ))}
