@@ -101,6 +101,7 @@ export type ViewType =
   | 'support-chat'
   | 'order-confirmation'
   | 'purchases'
+  | 'about'
 
 export const STORAGE_KEYS = {
   CART: 'sockuraaa_cart',

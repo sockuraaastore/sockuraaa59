@@ -15,6 +15,7 @@ import ProfileView from '@/components/profile/ProfileView'
 import SupportView from '@/components/support/SupportView'
 import SupportChat from '@/components/support/SupportChat'
 import PurchasesView from '@/components/user/PurchasesView'
+import AboutView from '@/components/user/AboutView'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import BannerDetail from '@/components/home/BannerDetail'
 import MagneticDock, { createDockItems } from '@/components/ui/dock'
@@ -81,11 +82,12 @@ export default function App() {
     onCart: () => navigate('cart'),
     onSupport: () => navigate('support'),
     onPurchases: () => navigate('purchases'),
+    onAbout: () => navigate('about'),
     onAdmin: currentUser.isAdmin ? () => navigate('admin') : undefined,
     onLogout: handleLogout,
   })
 
-  const dockIndex = ['home', 'search', 'cart', 'purchases', 'support'].indexOf(currentView)
+  const dockIndex = ['home', 'search', 'cart', 'purchases', 'about', 'support'].indexOf(currentView)
 
   const renderView = () => {
     switch (currentView) {
@@ -123,6 +125,8 @@ export default function App() {
         ) : null
       case 'purchases':
         return <PurchasesView />
+      case 'about':
+        return <AboutView />
       case 'admin':
         return currentUser.isAdmin ? <AdminDashboard /> : null
       default:
