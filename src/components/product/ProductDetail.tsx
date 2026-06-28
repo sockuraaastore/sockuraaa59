@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/hooks/useCart'
-import { RippleButton } from '@/components/ui/multi-type-ripple-buttons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import CommentSection from './CommentSection'
@@ -177,17 +176,14 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
             </div>
           )}
 
-          <RippleButton
-            variant="hover"
-            hoverBaseColor="#ec4899"
-            hoverRippleColor="rgba(236, 72, 153, 0.466)"
+          <button
             onClick={handleAddToCart}
             disabled={isOutOfStock || added}
-            className="inline-flex items-center justify-center h-12 rounded-xl px-8 text-base w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25"
+            className="inline-flex items-center justify-center h-12 rounded-xl px-8 text-base w-full gap-2 bg-pink text-white hover:bg-pink-500 shadow-lg shadow-pink/25 transition-colors"
           >
             <ShoppingCart size={20} />
             {added ? 'با موفقیت اضافه شد!' : 'افزودن به سبد خرید'}
-          </RippleButton>
+          </button>
         </motion.div>
       </div>
 
