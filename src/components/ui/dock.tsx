@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
 import { motion, MotionValue, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Home, Search, ShoppingCart, Headphones, LayoutDashboard, LogOut, PackageCheck, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -32,17 +32,27 @@ function DockIcon({
     return val - bounds.x - bounds.width / 2
   })
 
-  const widthSync = useTransform(distance, [-150, 0, 150], [40, 56, 40])
+  const widthSync = useTransform(distance, [-150, 0, 150], [36, 48, 36])
   const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 })
 
-  const [isHovered, setIsHovered] = useState(false)
+  const [showLabel, setShowLabel] = useState(false)
+
+  const handleTouchStart = useCallback(() => {
+    setShowLabel(true)
+  }, [])
+
+  const handleTouchEnd = useCallback(() => {
+    setTimeout(() => setShowLabel(false), 800)
+  }, [])
 
   return (
     <motion.div
       ref={ref}
       style={{ width, height: width }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setShowLabel(true)}
+      onMouseLeave={() => setShowLabel(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       onClick={item.action}
       className={cn(
         'relative flex items-center justify-center rounded-full cursor-pointer transition-colors duration-200',
@@ -58,9 +68,9 @@ function DockIcon({
       <motion.div
         initial={false}
         animate={{
-          opacity: isHovered ? 1 : 0,
-          y: isHovered ? 0 : 8,
-          scale: isHovered ? 1 : 0.8,
+          opacity: showLabel ? 1 : 0,
+          y: showLabel ? 0 : 8,
+          scale: showLabel ? 1 : 0.8,
         }}
         transition={{ duration: 0.15 }}
         className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-dark-100 px-3 py-1.5 text-xs font-medium text-cream shadow-lg pointer-events-none"
@@ -83,7 +93,8 @@ export default function MagneticDock({ items, activeIndex = 0, className }: Magn
       transition={{ type: 'spring', stiffness: 200, damping: 25, delay: 0.3 }}
       className={cn(
         'fixed bottom-6 left-1/2 -translate-x-1/2 z-50',
-        'flex items-end gap-2 px-4 py-3',
+        'flex items-end gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3',
+        'max-w-[calc(100vw-2rem)] overflow-x-auto touch-scroll',
         'rounded-2xl backdrop-blur-xl bg-dark-100/80 border border-white/10',
         'shadow-2xl shadow-black/20',
         className

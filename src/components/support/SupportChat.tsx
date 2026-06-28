@@ -57,7 +57,7 @@ export default function SupportChat({ ticketId, onBack }: SupportChatProps) {
           <p className="text-sm text-dark-300">{ticket.username}</p>
         </div>
 
-        <div className="h-96 overflow-y-auto p-4 space-y-4">
+        <div className="h-[50vh] md:h-96 overflow-y-auto p-4 space-y-4">
           {ticket.messages.map((msg) => (
             <motion.div
               key={msg.id}

@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --button-ripple-color: oklch(0.145 0 0 / 0.3);
+}
+
+.dark {
+  --button-ripple-color: oklch(0.985 0 0 / 0.5);
+}
+
 @layer base {
   * {
     direction: rtl;
@@ -24,5 +32,12 @@
 
   ::-webkit-scrollbar-thumb {
     @apply bg-pink-300 rounded-full;
+  }
+}
+
+@layer utilities {
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 }

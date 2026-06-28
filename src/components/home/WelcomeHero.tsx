@@ -56,7 +56,7 @@ export default function WelcomeHero() {
         {socks.map((sock, i) => (
           <div
             key={i}
-            className={`sock-${i} absolute transition-colors duration-500 ${sock.shade}`}
+            className={`sock-${i} absolute transition-colors duration-500 ${sock.shade} hidden md:block`}
             style={{
               left: sock.x,
               top: sock.y,
@@ -70,20 +70,20 @@ export default function WelcomeHero() {
           </div>
         ))}
 
-        <div className="relative z-10 flex flex-row-reverse items-center justify-center gap-8">
+        <div className="relative z-10 flex flex-col md:flex-row-reverse items-center justify-center gap-6 md:gap-8">
           <div className="relative inline-block cursor-pointer flex-shrink-0">
             <img
               src="/sock-color.jpg"
               alt="جوراب رنگارنگ"
-              className="w-64 md:w-80 rounded-2xl shadow-xl"
+              className="w-44 sm:w-64 md:w-80 rounded-2xl shadow-xl"
             />
             <img
               src="/sock-bw.jpg"
               alt="جوراب سیاه و سفید"
-              className="absolute inset-0 w-64 md:w-80 rounded-2xl shadow-xl transition-opacity duration-500 group-hover:opacity-0"
+              className="absolute inset-0 w-44 sm:w-64 md:w-80 rounded-2xl shadow-xl transition-opacity duration-500 group-hover:opacity-0"
             />
           </div>
-          <div className="text-right">
+          <div className="text-center md:text-right">
             <h2
               className="text-2xl md:text-4xl font-black leading-relaxed"
               style={{ fontFamily: 'Vazirmatn, sans-serif', color: '#1a1a2e' }}
