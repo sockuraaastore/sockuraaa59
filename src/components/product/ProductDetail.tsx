@@ -94,7 +94,7 @@ export default function ProductDetail({ product, onBack }: ProductDetailProps) {
           className="flex flex-col"
         >
           <Badge variant="secondary" className="w-fit mb-4">
-            {product.category}
+            {Array.isArray(product.category) ? product.category.join('، ') : product.category}
           </Badge>
 
           <h1 className="text-3xl font-black text-dark mb-4">{product.name}</h1>

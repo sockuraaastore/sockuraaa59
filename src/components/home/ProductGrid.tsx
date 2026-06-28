@@ -14,7 +14,7 @@ export default function ProductGrid({ products, onViewDetail }: ProductGridProps
   const [activeCategory, setActiveCategory] = useState<string>('')
 
   const filteredProducts = activeCategory
-    ? products.filter(p => p.category === activeCategory)
+    ? products.filter(p => Array.isArray(p.category) ? p.category.includes(activeCategory) : p.category === activeCategory)
     : products
 
   return (

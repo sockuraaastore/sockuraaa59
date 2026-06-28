@@ -21,7 +21,7 @@ export default function AdminProducts() {
   const [stockQuantity, setStockQuantity] = useState('')
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [newImageUrl, setNewImageUrl] = useState('')
-  const [category, setCategory] = useState('')
+  const [category, setCategory] = useState<string[]>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [showNewCategory, setShowNewCategory] = useState(false)
 
@@ -32,7 +32,7 @@ export default function AdminProducts() {
     setStockQuantity('')
     setImageUrls([])
     setNewImageUrl('')
-    setCategory('')
+    setCategory([])
     setNewCategoryName('')
     setShowNewCategory(false)
     setEditId(null)
@@ -72,9 +72,13 @@ export default function AdminProducts() {
     if (!newCategoryName.trim()) return
     const result = await addCategory(newCategoryName.trim())
     if (!result.success) { alert('خطا در ذخیره دسته‌بندی: ' + (result.error || 'ناشناخته')); return }
-    setCategory(newCategoryName.trim())
+    setCategory([...category, newCategoryName.trim()])
     setNewCategoryName('')
     setShowNewCategory(false)
+  }
+
+  const toggleCategory = (name: string) => {
+    setCategory(prev => prev.includes(name) ? prev.filter(c => c !== name) : [...prev, name])
   }
 
   const handleAdd = async () => {
@@ -103,7 +107,7 @@ export default function AdminProducts() {
     setPrice(product.price.toString())
     setStockQuantity(product.stockQuantity.toString())
     setImageUrls([...product.imageUrls])
-    setCategory(product.category)
+    setCategory(Array.isArray(product.category) ? [...product.category] : [product.category])
     setShowAdd(true)
   }
 
@@ -218,7 +222,7 @@ export default function AdminProducts() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-dark mb-2">دسته‌بندی</label>
+              <label className="block text-sm font-medium text-dark mb-2">دسته‌بندی‌ها</label>
               {showNewCategory ? (
                 <div className="flex gap-2">
                   <Input
@@ -231,21 +235,31 @@ export default function AdminProducts() {
                   <Button type="button" variant="ghost" size="sm" onClick={() => setShowNewCategory(false)}>لغو</Button>
                 </div>
               ) : (
-                <div className="flex gap-2">
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="flex-1 h-11 rounded-xl border-2 border-pink-200 bg-white px-4 text-sm text-dark focus:outline-none focus:border-pink"
-                  >
-                    <option value="">انتخاب دسته‌بندی</option>
+                <>
+                  <div className="flex flex-wrap gap-2 mb-2">
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.name}>{cat.name}</option>
+                      <label
+                        key={cat.id}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm cursor-pointer border transition-colors ${
+                          category.includes(cat.name)
+                            ? 'bg-pink text-white border-pink'
+                            : 'bg-white text-dark border-pink-200 hover:border-pink'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={category.includes(cat.name)}
+                          onChange={() => toggleCategory(cat.name)}
+                          className="sr-only"
+                        />
+                        {cat.name}
+                      </label>
                     ))}
-                  </select>
+                  </div>
                   <Button type="button" variant="outline" size="sm" onClick={() => setShowNewCategory(true)}>
                     دسته جدید
                   </Button>
-                </div>
+                </>
               )}
             </div>
 
@@ -278,7 +292,7 @@ export default function AdminProducts() {
                   <Badge variant={product.stockQuantity === 0 ? 'outOfStock' : 'stock'}>
                     {product.stockQuantity === 0 ? 'تموم شده' : `${product.stockQuantity} موجود`}
                   </Badge>
-                  <Badge variant="secondary">{product.category}</Badge>
+                  <Badge variant="secondary">{Array.isArray(product.category) ? product.category.join('، ') : product.category}</Badge>
                   {(product.imageUrls?.length ?? 0) > 1 && (
                     <Badge variant="outline">{product.imageUrls?.length} تصویر</Badge>
                   )}

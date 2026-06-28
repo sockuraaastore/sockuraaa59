@@ -12,7 +12,7 @@ export interface Product {
   price: number
   stockQuantity: number
   imageUrls: string[]
-  category: string
+  category: string[]
   createdAt: string
 }
 

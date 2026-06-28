@@ -20,7 +20,7 @@ export default function SearchView({ onViewDetail }: SearchViewProps) {
     return products.filter(p =>
       p.name.toLowerCase().includes(searchTerm) ||
       p.description.toLowerCase().includes(searchTerm) ||
-      p.category.toLowerCase().includes(searchTerm)
+      (Array.isArray(p.category) && p.category.some(c => c.toLowerCase().includes(searchTerm)))
     )
   }, [products, query])
 

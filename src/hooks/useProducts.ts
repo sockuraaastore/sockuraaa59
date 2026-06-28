@@ -3,7 +3,9 @@ import { supabase } from '@/lib/supabase'
 import type { Product } from '@/types'
 
 function mapProduct(r: Record<string, unknown>): Product {
-  return { id: r.id as string, name: r.name as string, description: r.description as string, price: r.price as number, stockQuantity: r.stock_quantity as number, imageUrls: (r.image_urls as string[]) ?? [], category: r.category as string, createdAt: r.created_at as string }
+  const cat = r.category
+  const categoryArray = Array.isArray(cat) ? cat : (typeof cat === 'string' && cat ? [cat] : [])
+  return { id: r.id as string, name: r.name as string, description: r.description as string, price: r.price as number, stockQuantity: r.stock_quantity as number, imageUrls: (r.image_urls as string[]) ?? [], category: categoryArray as string[], createdAt: r.created_at as string }
 }
 
 export function useProducts() {
