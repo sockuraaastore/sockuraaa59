@@ -23,7 +23,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
 
   if (banners.length === 0) {
     return (
-      <section className="relative overflow-hidden bg-dark min-h-[500px] lg:min-h-[600px] flex items-center">
+      <section className="relative overflow-hidden bg-cream min-h-[500px] lg:min-h-[600px] flex items-center">
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink/20 rounded-full blur-3xl" />
           <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-pink/10 rounded-full blur-2xl" />
@@ -42,7 +42,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
                 <span className="text-pink text-sm font-medium">مجموعه جدید ۲۰۲۶</span>
               </div>
 
-              <h2 className="text-5xl lg:text-7xl font-black text-cream leading-tight mb-6">
+              <h2 className="text-5xl lg:text-7xl font-black text-dark leading-tight mb-6">
                 جوراب
                 <br />
                 <span className="text-pink">مرغوب</span>
@@ -50,7 +50,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
                 بپوشید
               </h2>
 
-              <p className="text-cream/60 text-lg mb-8 max-w-md mx-auto lg:mx-0 lg:mr-0">
+              <p className="text-dark-300 text-lg mb-8 max-w-md mx-auto lg:mx-0 lg:mr-0">
                 بهترین کیفیت جوراب با طراحی‌های مدرن و متنوع. از جوراب روزمره تا مجلسی، همه اینجا پیدا می‌کنید.
               </p>
             </motion.div>
@@ -76,7 +76,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
   const banner = banners[currentIndex]
 
   return (
-    <section className="relative overflow-hidden bg-dark min-h-[500px] lg:min-h-[600px] flex items-center">
+    <section className="relative overflow-hidden bg-cream min-h-[500px] lg:min-h-[600px] flex items-center">
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink/20 rounded-full blur-3xl" />
       </div>
@@ -97,11 +97,11 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
               transition={{ duration: 0.8 }}
               className="text-center lg:text-right"
             >
-              <h2 className="text-4xl lg:text-6xl font-black text-cream leading-tight mb-6">
+              <h2 className="text-4xl lg:text-6xl font-black text-dark leading-tight mb-6">
                 {banner.name}
               </h2>
 
-              <p className="text-cream/60 text-lg mb-8 max-w-md mx-auto lg:mx-0">
+              <p className="text-dark-300 text-lg mb-8 max-w-md mx-auto lg:mx-0">
                 {banner.description.substring(0, 150)}...
               </p>
 
@@ -139,7 +139,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
               key={i}
               onClick={() => setCurrentIndex(i)}
               className={`w-2 h-2 rounded-full transition-all ${
-                i === currentIndex ? 'bg-pink w-6' : 'bg-cream/30'
+                i === currentIndex ? 'bg-pink w-6' : 'bg-dark/20'
               }`}
             />
           ))}
@@ -150,13 +150,13 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
         <>
           <button
             onClick={() => setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-cream/10 backdrop-blur-sm rounded-full flex items-center justify-center text-cream hover:bg-cream/20 transition-colors z-20"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-dark/10 backdrop-blur-sm rounded-full flex items-center justify-center text-dark hover:bg-dark/20 transition-colors z-20"
           >
             <ChevronRight size={20} />
           </button>
           <button
             onClick={() => setCurrentIndex((prev) => (prev + 1) % banners.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-cream/10 backdrop-blur-sm rounded-full flex items-center justify-center text-cream hover:bg-cream/20 transition-colors z-20"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-dark/10 backdrop-blur-sm rounded-full flex items-center justify-center text-dark hover:bg-dark/20 transition-colors z-20"
           >
             <ChevronLeft size={20} />
           </button>
