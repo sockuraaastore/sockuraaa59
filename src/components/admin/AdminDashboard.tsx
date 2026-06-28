@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones, Tag } from 'lucide-react'
 import AdminProducts from './AdminProducts'
 import AdminOrders from './AdminOrders'
 import AdminComments from './AdminComments'
 import AdminBanners from './AdminBanners'
 import AdminSupport from './AdminSupport'
+import AdminCategories from './AdminCategories'
 
-type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'support'
+type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'categories' | 'support'
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<AdminTab>('dashboard')
 
   const tabs = [
     { id: 'products' as AdminTab, label: 'محصولات', icon: Package },
+    { id: 'categories' as AdminTab, label: 'دسته‌بندی‌ها', icon: Tag },
     { id: 'orders' as AdminTab, label: 'سفارشات', icon: ShoppingCart },
     { id: 'comments' as AdminTab, label: 'نظرات', icon: MessageCircle },
     { id: 'banners' as AdminTab, label: 'بنرها', icon: Image },
@@ -52,6 +54,7 @@ export default function AdminDashboard() {
         animate={{ opacity: 1, y: 0 }}
       >
         {tab === 'products' && <AdminProducts />}
+        {tab === 'categories' && <AdminCategories />}
         {tab === 'orders' && <AdminOrders />}
         {tab === 'comments' && <AdminComments />}
         {tab === 'banners' && <AdminBanners />}
