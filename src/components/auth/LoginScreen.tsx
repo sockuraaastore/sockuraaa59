@@ -3,11 +3,12 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User, LogIn } from 'lucide-react'
+import { User, LogIn, Lock } from 'lucide-react'
 
 export default function LoginScreen() {
   const { enter, savedUsername } = useAuth()
   const [username, setUsername] = useState(savedUsername)
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -16,7 +17,7 @@ export default function LoginScreen() {
     setError('')
     setBusy(true)
 
-    const result = await enter(username)
+    const result = await enter(username, password)
     if (!result.success) {
       setError(result.error || '')
     }
@@ -55,6 +56,21 @@ export default function LoginScreen() {
                 className="text-center text-lg"
                 autoComplete="off"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-dark mb-2">رمز عبور</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-300" />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="رمز عبور خود را وارد کنید"
+                  className="text-center text-lg pl-10"
+                  autoComplete="off"
+                />
+              </div>
             </div>
 
             {error && (
