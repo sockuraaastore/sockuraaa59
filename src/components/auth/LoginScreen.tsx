@@ -3,10 +3,13 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User, LogIn, Lock } from 'lucide-react'
+import { User, LogIn, Lock, UserPlus } from 'lucide-react'
+
+type Mode = 'login' | 'register'
 
 export default function LoginScreen() {
-  const { enter, savedUsername } = useAuth()
+  const { register, login, savedUsername } = useAuth()
+  const [mode, setMode] = useState<Mode>('login')
   const [username, setUsername] = useState(savedUsername)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -17,11 +20,19 @@ export default function LoginScreen() {
     setError('')
     setBusy(true)
 
-    const result = await enter(username, password)
+    const result = mode === 'register'
+      ? await register(username, password)
+      : await login(username, password)
+
     if (!result.success) {
       setError(result.error || '')
     }
     setBusy(false)
+  }
+
+  const switchMode = (newMode: Mode) => {
+    setMode(newMode)
+    setError('')
   }
 
   return (
@@ -42,9 +53,30 @@ export default function LoginScreen() {
         </div>
 
         <div className="bg-white rounded-3xl p-8 shadow-xl shadow-pink/5 border border-pink-100">
-          <h2 className="text-xl font-bold text-dark mb-6 text-center">
-            نام خود را وارد کنید
-          </h2>
+          <div className="flex mb-6 bg-cream rounded-2xl p-1">
+            <button
+              type="button"
+              onClick={() => switchMode('login')}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                mode === 'login'
+                  ? 'bg-pink text-white shadow-md'
+                  : 'text-dark-300 hover:text-dark'
+              }`}
+            >
+              ورود
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode('register')}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                mode === 'register'
+                  ? 'bg-pink text-white shadow-md'
+                  : 'text-dark-300 hover:text-dark'
+              }`}
+            >
+              ثبت‌نام
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -81,10 +113,17 @@ export default function LoginScreen() {
 
             <Button type="submit" className="w-full h-12 text-base" size="lg" disabled={busy}>
               {busy ? 'لطفاً صبر کنید...' : (
-                <>
-                  <LogIn className="ml-2" size={18} />
-                  ورود به سایت
-                </>
+                mode === 'register' ? (
+                  <>
+                    <UserPlus className="ml-2" size={18} />
+                    ثبت‌نام
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="ml-2" size={18} />
+                    ورود به سایت
+                  </>
+                )
               )}
             </Button>
           </form>
