@@ -14,6 +14,7 @@ import OrderConfirmation from '@/components/checkout/OrderConfirmation'
 import ProfileView from '@/components/profile/ProfileView'
 import SupportView from '@/components/support/SupportView'
 import SupportChat from '@/components/support/SupportChat'
+import PurchasesView from '@/components/user/PurchasesView'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import BannerDetail from '@/components/home/BannerDetail'
 import MagneticDock, { createDockItems } from '@/components/ui/dock'
@@ -79,11 +80,12 @@ export default function App() {
     onSearch: () => navigate('search'),
     onCart: () => navigate('cart'),
     onSupport: () => navigate('support'),
+    onPurchases: () => navigate('purchases'),
     onAdmin: currentUser.isAdmin ? () => navigate('admin') : undefined,
     onLogout: handleLogout,
   })
 
-  const dockIndex = ['home', 'search', 'cart', 'support'].indexOf(currentView)
+  const dockIndex = ['home', 'search', 'cart', 'purchases', 'support'].indexOf(currentView)
 
   const renderView = () => {
     switch (currentView) {
@@ -119,6 +121,8 @@ export default function App() {
         return selectedTicketId ? (
           <SupportChat ticketId={selectedTicketId} onBack={() => navigate('support')} />
         ) : null
+      case 'purchases':
+        return <PurchasesView />
       case 'admin':
         return currentUser.isAdmin ? <AdminDashboard /> : null
       default:

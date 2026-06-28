@@ -100,6 +100,7 @@ export type ViewType =
   | 'banner-detail'
   | 'support-chat'
   | 'order-confirmation'
+  | 'purchases'
 
 export const STORAGE_KEYS = {
   CART: 'sockuraaa_cart',
