@@ -41,7 +41,7 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
           <img
             src={banner.imageUrl}
             alt={banner.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </motion.div>
       </AnimatePresence>
