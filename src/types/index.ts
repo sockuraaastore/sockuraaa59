@@ -95,6 +95,16 @@ export interface Banner {
   createdAt: string
 }
 
+export interface Article {
+  id: string
+  title: string
+  imageUrl: string
+  description: string
+  videoUrl: string
+  isActive: boolean
+  createdAt: string
+}
+
 export interface SupportMessage {
   id: string
   sender: 'user' | 'admin'
@@ -126,6 +136,8 @@ export type ViewType =
   | 'order-confirmation'
   | 'purchases'
   | 'about'
+  | 'articles'
+  | 'article-detail'
 
 export const STORAGE_KEYS = {
   CART: 'sockuraaa_cart',

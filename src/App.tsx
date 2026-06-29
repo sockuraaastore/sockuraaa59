@@ -16,10 +16,12 @@ import SupportView from '@/components/support/SupportView'
 import SupportChat from '@/components/support/SupportChat'
 import PurchasesView from '@/components/user/PurchasesView'
 import AboutView from '@/components/user/AboutView'
+import ArticlesView from '@/components/user/ArticlesView'
+import ArticleDetail from '@/components/user/ArticleDetail'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import BannerDetail from '@/components/home/BannerDetail'
 import MagneticDock, { createDockItems } from '@/components/ui/dock'
-import type { ViewType, Product, Banner } from '@/types'
+import type { ViewType, Product, Banner, Article } from '@/types'
 
 export default function App() {
   const { currentUser, loading, logout } = useAuth()
@@ -28,12 +30,14 @@ export default function App() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null)
 
   const navigate = useCallback((view: ViewType) => {
     setCurrentView(view)
     if (view !== 'product-detail') setSelectedProduct(null)
     if (view !== 'banner-detail') setSelectedBanner(null)
+    if (view !== 'article-detail') setSelectedArticle(null)
     if (view !== 'support-chat') setSelectedTicketId(null)
     window.scrollTo(0, 0)
   }, [])
@@ -47,6 +51,12 @@ export default function App() {
   const handleViewBanner = useCallback((banner: Banner) => {
     setSelectedBanner(banner)
     setCurrentView('banner-detail')
+    window.scrollTo(0, 0)
+  }, [])
+
+  const handleViewArticle = useCallback((article: Article) => {
+    setSelectedArticle(article)
+    setCurrentView('article-detail')
     window.scrollTo(0, 0)
   }, [])
 
@@ -82,12 +92,13 @@ export default function App() {
     onCart: () => navigate('cart'),
     onSupport: () => navigate('support'),
     onPurchases: () => navigate('purchases'),
+    onArticles: () => navigate('articles'),
     onAbout: () => navigate('about'),
     onAdmin: currentUser.isAdmin ? () => navigate('admin') : undefined,
     onLogout: handleLogout,
   })
 
-  const dockIndex = ['home', 'search', 'cart', 'purchases', 'about', 'support'].indexOf(currentView)
+  const dockIndex = ['home', 'search', 'cart', 'purchases', 'articles', 'about', 'support'].indexOf(currentView)
 
   const renderView = () => {
     switch (currentView) {
@@ -127,6 +138,12 @@ export default function App() {
         return <PurchasesView />
       case 'about':
         return <AboutView />
+      case 'articles':
+        return <ArticlesView onViewDetail={handleViewArticle} />
+      case 'article-detail':
+        return selectedArticle ? (
+          <ArticleDetail article={selectedArticle} onBack={() => navigate('articles')} />
+        ) : null
       case 'admin':
         return currentUser.isAdmin ? <AdminDashboard /> : null
       default:

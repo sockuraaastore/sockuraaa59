@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones, Tag, Ruler, Users } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones, Tag, Ruler, Users, BookOpen } from 'lucide-react'
 import AdminProducts from './AdminProducts'
 import AdminOrders from './AdminOrders'
 import AdminComments from './AdminComments'
@@ -10,8 +10,9 @@ import AdminSupport from './AdminSupport'
 import AdminCategories from './AdminCategories'
 import AdminSizes from './AdminSizes'
 import AdminGenderAges from './AdminGenderAges'
+import AdminArticles from './AdminArticles'
 
-type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'categories' | 'sizes' | 'genderAges' | 'support'
+type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'categories' | 'sizes' | 'genderAges' | 'support' | 'articles'
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<AdminTab>('dashboard')
@@ -24,6 +25,7 @@ export default function AdminDashboard() {
     { id: 'orders' as AdminTab, label: 'سفارشات', icon: ShoppingCart },
     { id: 'comments' as AdminTab, label: 'نظرات', icon: MessageCircle },
     { id: 'banners' as AdminTab, label: 'بنرها', icon: Image },
+    { id: 'articles' as AdminTab, label: 'مقالات', icon: BookOpen },
     { id: 'support' as AdminTab, label: 'پشتیبانی', icon: Headphones },
   ]
 
@@ -67,6 +69,7 @@ export default function AdminDashboard() {
         {tab === 'orders' && <AdminOrders />}
         {tab === 'comments' && <AdminComments />}
         {tab === 'banners' && <AdminBanners />}
+        {tab === 'articles' && <AdminArticles />}
         {tab === 'support' && <AdminSupport />}
       </motion.div>
     </div>

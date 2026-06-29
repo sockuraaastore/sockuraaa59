@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react'
 import { motion, MotionValue, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { Home, Search, ShoppingCart, Headphones, LayoutDashboard, LogOut, PackageCheck, Info } from 'lucide-react'
+import { Home, Search, ShoppingCart, Headphones, LayoutDashboard, LogOut, PackageCheck, Info, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface DockItem {
@@ -117,6 +117,7 @@ export function createDockItems(handlers: {
   onSearch: () => void
   onCart: () => void
   onPurchases: () => void
+  onArticles: () => void
   onAbout: () => void
   onSupport: () => void
   onAdmin?: () => void
@@ -127,6 +128,7 @@ export function createDockItems(handlers: {
     { icon: <Search size={20} />, label: 'جستجو', action: handlers.onSearch },
     { icon: <ShoppingCart size={20} />, label: 'سبد خرید', action: handlers.onCart },
     { icon: <PackageCheck size={20} />, label: 'خریدها', action: handlers.onPurchases },
+    { icon: <BookOpen size={20} />, label: 'مقالات', action: handlers.onArticles },
     { icon: <Info size={20} />, label: 'درباره ما', action: handlers.onAbout },
     { icon: <Headphones size={20} />, label: 'پشتیبانی', action: handlers.onSupport },
   ]
