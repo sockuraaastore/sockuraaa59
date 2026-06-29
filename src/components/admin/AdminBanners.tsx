@@ -25,7 +25,7 @@ export default function AdminBanners() {
       return
     }
     try {
-      const compressed = await compressImage(file)
+      const compressed = await compressImage(file, 1920, 0.85)
       setImageUrl(compressed)
     } catch {
       alert('خطا در پردازش تصویر')
