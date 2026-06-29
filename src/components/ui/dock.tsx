@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, MotionValue, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Home, Search, ShoppingCart, Headphones, LayoutDashboard, LogOut, PackageCheck, Info, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -36,48 +37,74 @@ function DockIcon({
   const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 })
 
   const [showLabel, setShowLabel] = useState(false)
+  const [labelPos, setLabelPos] = useState({ x: 0, y: 0 })
+
+  const updateLabelPos = useCallback(() => {
+    if (ref.current) {
+      const bounds = ref.current.getBoundingClientRect()
+      setLabelPos({ x: bounds.left + bounds.width / 2, y: bounds.top - 8 })
+    }
+  }, [])
+
+  const handleMouseEnter = useCallback(() => {
+    updateLabelPos()
+    setShowLabel(true)
+  }, [updateLabelPos])
 
   const handleTouchStart = useCallback(() => {
+    updateLabelPos()
     setShowLabel(true)
-  }, [])
+  }, [updateLabelPos])
 
   const handleTouchEnd = useCallback(() => {
     setTimeout(() => setShowLabel(false), 800)
   }, [])
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ width, height: width }}
-      onMouseEnter={() => setShowLabel(true)}
-      onMouseLeave={() => setShowLabel(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onClick={item.action}
-      className={cn(
-        'relative flex items-center justify-center rounded-full cursor-pointer transition-colors duration-200',
-        isActive
-          ? 'bg-pink text-white shadow-lg shadow-pink/30'
-          : 'bg-dark-200 text-cream hover:bg-dark-300'
-      )}
-    >
-      <motion.div className="flex items-center justify-center">
-        {item.icon}
+    <>
+      <motion.div
+        ref={ref}
+        style={{ width, height: width }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={() => setShowLabel(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onClick={item.action}
+        className={cn(
+          'relative flex items-center justify-center rounded-full cursor-pointer transition-colors duration-200',
+          isActive
+            ? 'bg-pink text-white shadow-lg shadow-pink/30'
+            : 'bg-dark-200 text-cream hover:bg-dark-300'
+        )}
+      >
+        <motion.div className="flex items-center justify-center">
+          {item.icon}
+        </motion.div>
       </motion.div>
 
-      <motion.div
-        initial={false}
-        animate={{
-          opacity: showLabel ? 1 : 0,
-          y: showLabel ? 0 : 8,
-          scale: showLabel ? 1 : 0.8,
-        }}
-        transition={{ duration: 0.15 }}
-        className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-dark-100 px-3 py-1.5 text-xs font-medium text-cream shadow-lg pointer-events-none"
-      >
-        {item.label}
-      </motion.div>
-    </motion.div>
+      {createPortal(
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: showLabel ? 1 : 0,
+            y: showLabel ? 0 : 8,
+            scale: showLabel ? 1 : 0.8,
+          }}
+          transition={{ duration: 0.15 }}
+          style={{
+            position: 'fixed',
+            left: labelPos.x,
+            top: labelPos.y,
+            transform: 'translate(-50%, -100%)',
+            pointerEvents: 'none',
+          }}
+          className="whitespace-nowrap rounded-lg bg-dark-100 px-3 py-1.5 text-xs font-medium text-cream shadow-lg z-[100]"
+        >
+          {item.label}
+        </motion.div>,
+        document.body
+      )}
+    </>
   )
 }
 
