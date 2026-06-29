@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useProducts } from '@/hooks/useProducts'
 import { useCategories } from '@/hooks/useCategories'
 import { useSizes } from '@/hooks/useSizes'
+import { useGenderAges } from '@/hooks/useGenderAges'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +16,7 @@ export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
   const { categories, addCategory } = useCategories()
   const { sizes } = useSizes()
+  const { genderAges } = useGenderAges()
   const [showAdd, setShowAdd] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
 
@@ -27,6 +29,7 @@ export default function AdminProducts() {
   const [category, setCategory] = useState<string[]>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [showNewCategory, setShowNewCategory] = useState(false)
+  const [genderAge, setGenderAge] = useState<string[]>([])
   const [productSizes, setProductSizes] = useState<{ sizeName: string; stockQuantity: number }[]>([])
 
   const resetForm = () => {
@@ -39,6 +42,7 @@ export default function AdminProducts() {
     setCategory([])
     setNewCategoryName('')
     setShowNewCategory(false)
+    setGenderAge([])
     setProductSizes([])
     setEditId(null)
   }
@@ -103,6 +107,7 @@ export default function AdminProducts() {
       stockQuantity: sizes.length > 0 ? 0 : parseInt(stockQuantity || '0'),
       imageUrls: finalImages,
       category,
+      genderAge,
       sizes,
     })
     if (!result.success) {
@@ -121,6 +126,7 @@ export default function AdminProducts() {
     setStockQuantity(product.stockQuantity.toString())
     setImageUrls([...product.imageUrls])
     setCategory(Array.isArray(product.category) ? [...product.category] : [product.category])
+    setGenderAge(Array.isArray(product.genderAge) ? [...product.genderAge] : [product.genderAge])
     setProductSizes(product.sizes.map(s => ({ sizeName: s.sizeName, stockQuantity: s.stockQuantity })))
     setShowAdd(true)
   }
@@ -141,6 +147,7 @@ export default function AdminProducts() {
       stockQuantity: sizes.length > 0 ? 0 : parseInt(stockQuantity || '0'),
       imageUrls,
       category,
+      genderAge,
       sizes,
     })
     if (!result.success) {
@@ -283,6 +290,30 @@ export default function AdminProducts() {
                   </Button>
                 </>
               )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-dark mb-2">جنسیت و سن</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {genderAges.map((ga) => (
+                  <label
+                    key={ga.id}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm cursor-pointer border transition-colors ${
+                      genderAge.includes(ga.name)
+                        ? 'bg-pink text-white border-pink'
+                        : 'bg-white text-dark border-pink-200 hover:border-pink'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={genderAge.includes(ga.name)}
+                      onChange={() => setGenderAge(prev => prev.includes(ga.name) ? prev.filter(g => g !== ga.name) : [...prev, ga.name])}
+                      className="sr-only"
+                    />
+                    {ga.name}
+                  </label>
+                ))}
+              </div>
             </div>
 
             <div>

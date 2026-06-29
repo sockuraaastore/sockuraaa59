@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import ProductCard from '@/components/product/ProductCard'
 import { useCategories } from '@/hooks/useCategories'
 import { useSizes } from '@/hooks/useSizes'
+import { useGenderAges } from '@/hooks/useGenderAges'
 import type { Product } from '@/types'
 
 interface ProductGridProps {
@@ -13,8 +14,10 @@ interface ProductGridProps {
 export default function ProductGrid({ products, onViewDetail }: ProductGridProps) {
   const { categories } = useCategories()
   const { sizes } = useSizes()
+  const { genderAges } = useGenderAges()
   const [activeCategory, setActiveCategory] = useState<string>('')
   const [activeSize, setActiveSize] = useState<string>('')
+  const [activeGenderAge, setActiveGenderAge] = useState<string>('')
 
   const filteredProducts = products.filter(p => {
     const matchesCategory = activeCategory
@@ -25,7 +28,11 @@ export default function ProductGrid({ products, onViewDetail }: ProductGridProps
       ? p.sizes.some(s => s.sizeName === activeSize && s.stockQuantity > 0)
       : true
 
-    return matchesCategory && matchesSize
+    const matchesGenderAge = activeGenderAge
+      ? (Array.isArray(p.genderAge) ? p.genderAge.includes(activeGenderAge) : p.genderAge === activeGenderAge)
+      : true
+
+    return matchesCategory && matchesSize && matchesGenderAge
   })
 
   return (
@@ -88,6 +95,34 @@ export default function ProductGrid({ products, onViewDetail }: ProductGridProps
               }`}
             >
               {size.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {genderAges.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto touch-scroll pb-4 mb-8 flex-nowrap justify-start md:justify-center">
+          <button
+            onClick={() => setActiveGenderAge('')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+              activeGenderAge === ''
+                ? 'bg-pink text-white shadow-lg shadow-pink/25'
+                : 'bg-white text-dark border border-pink-200 hover:border-pink-400'
+            }`}
+          >
+            همه
+          </button>
+          {genderAges.map((ga) => (
+            <button
+              key={ga.id}
+              onClick={() => setActiveGenderAge(ga.name)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                activeGenderAge === ga.name
+                  ? 'bg-pink text-white shadow-lg shadow-pink/25'
+                  : 'bg-white text-dark border border-pink-200 hover:border-pink-400'
+              }`}
+            >
+              {ga.name}
             </button>
           ))}
         </div>

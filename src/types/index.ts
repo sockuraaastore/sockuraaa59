@@ -13,6 +13,7 @@ export interface Product {
   stockQuantity: number
   imageUrls: string[]
   category: string[]
+  genderAge: string[]
   sizes: ProductSize[]
   createdAt: string
 }
@@ -24,6 +25,12 @@ export interface Category {
 }
 
 export interface Size {
+  id: string
+  name: string
+  createdAt: string
+}
+
+export interface GenderAge {
   id: string
   name: string
   createdAt: string

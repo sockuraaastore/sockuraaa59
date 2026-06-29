@@ -53,9 +53,16 @@ export default function ProductCard({ product, onViewDetail }: ProductCardProps)
           )}
         </div>
 
-        <Badge variant="secondary" className="absolute top-3 left-3">
-          {Array.isArray(product.category) ? product.category.join('، ') : product.category}
-        </Badge>
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
+          <Badge variant="secondary">
+            {Array.isArray(product.category) ? product.category.join('، ') : product.category}
+          </Badge>
+          {Array.isArray(product.genderAge) && product.genderAge.length > 0 && (
+            <Badge variant="outline">
+              {product.genderAge.join('، ')}
+            </Badge>
+          )}
+        </div>
       </div>
 
       <div className="p-4">

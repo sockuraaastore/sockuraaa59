@@ -5,7 +5,9 @@ import type { Product, ProductSize } from '@/types'
 function mapProduct(r: Record<string, unknown>, sizes: ProductSize[] = []): Product {
   const cat = r.category
   const categoryArray = Array.isArray(cat) ? cat : (typeof cat === 'string' && cat ? [cat] : [])
-  return { id: r.id as string, name: r.name as string, description: r.description as string, price: r.price as number, stockQuantity: r.stock_quantity as number, imageUrls: (r.image_urls as string[]) ?? [], category: categoryArray as string[], sizes, createdAt: r.created_at as string }
+  const ga = r.gender_age
+  const genderAgeArray = Array.isArray(ga) ? ga : (typeof ga === 'string' && ga ? [ga] : [])
+  return { id: r.id as string, name: r.name as string, description: r.description as string, price: r.price as number, stockQuantity: r.stock_quantity as number, imageUrls: (r.image_urls as string[]) ?? [], category: categoryArray as string[], genderAge: genderAgeArray as string[], sizes, createdAt: r.created_at as string }
 }
 
 export function useProducts() {
@@ -29,7 +31,7 @@ export function useProducts() {
   useEffect(() => { refresh() }, [refresh])
 
   const addProduct = useCallback(async (data: Omit<Product, 'id' | 'createdAt'>): Promise<{ success: boolean; error?: string }> => {
-    const { data: newProduct, error } = await supabase.from('products').insert({ name: data.name, description: data.description, price: data.price, stock_quantity: data.stockQuantity, image_urls: data.imageUrls, category: data.category }).select('id').single()
+    const { data: newProduct, error } = await supabase.from('products').insert({ name: data.name, description: data.description, price: data.price, stock_quantity: data.stockQuantity, image_urls: data.imageUrls, category: data.category, gender_age: data.genderAge }).select('id').single()
     if (error) { console.error('addProduct failed:', error.message); return { success: false, error: error.message } }
 
     if (data.sizes && data.sizes.length > 0) {
@@ -50,6 +52,7 @@ export function useProducts() {
     if (data.stockQuantity !== undefined) u.stock_quantity = data.stockQuantity
     if (data.imageUrls !== undefined) u.image_urls = data.imageUrls
     if (data.category !== undefined) u.category = data.category
+    if (data.genderAge !== undefined) u.gender_age = data.genderAge
     const { error } = await supabase.from('products').update(u).eq('id', id)
     if (error) { console.error('updateProduct failed:', error.message); return { success: false, error: error.message } }
 

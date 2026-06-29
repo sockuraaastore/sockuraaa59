@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones, Tag, Ruler } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, MessageCircle, Image, Headphones, Tag, Ruler, Users } from 'lucide-react'
 import AdminProducts from './AdminProducts'
 import AdminOrders from './AdminOrders'
 import AdminComments from './AdminComments'
@@ -9,8 +9,9 @@ import AdminBanners from './AdminBanners'
 import AdminSupport from './AdminSupport'
 import AdminCategories from './AdminCategories'
 import AdminSizes from './AdminSizes'
+import AdminGenderAges from './AdminGenderAges'
 
-type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'categories' | 'sizes' | 'support'
+type AdminTab = 'dashboard' | 'products' | 'orders' | 'comments' | 'banners' | 'categories' | 'sizes' | 'genderAges' | 'support'
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState<AdminTab>('dashboard')
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
     { id: 'products' as AdminTab, label: 'محصولات', icon: Package },
     { id: 'categories' as AdminTab, label: 'دسته‌بندی‌ها', icon: Tag },
     { id: 'sizes' as AdminTab, label: 'سایزها', icon: Ruler },
+    { id: 'genderAges' as AdminTab, label: 'جنسیت و سن', icon: Users },
     { id: 'orders' as AdminTab, label: 'سفارشات', icon: ShoppingCart },
     { id: 'comments' as AdminTab, label: 'نظرات', icon: MessageCircle },
     { id: 'banners' as AdminTab, label: 'بنرها', icon: Image },
@@ -61,6 +63,7 @@ export default function AdminDashboard() {
         {tab === 'products' && <AdminProducts />}
         {tab === 'categories' && <AdminCategories />}
         {tab === 'sizes' && <AdminSizes />}
+        {tab === 'genderAges' && <AdminGenderAges />}
         {tab === 'orders' && <AdminOrders />}
         {tab === 'comments' && <AdminComments />}
         {tab === 'banners' && <AdminBanners />}

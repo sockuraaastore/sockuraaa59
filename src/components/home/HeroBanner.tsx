@@ -36,12 +36,12 @@ export default function HeroBanner({ onBannerClick }: HeroBannerProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative w-full aspect-[16/5]"
+          className="relative w-full aspect-video"
         >
           <img
             src={banner.imageUrl}
             alt={banner.name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover scale-[1.15]"
           />
         </motion.div>
       </AnimatePresence>
