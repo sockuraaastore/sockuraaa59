@@ -86,28 +86,33 @@ export default function MagneticDock({ items, activeIndex = 0, className }: Magn
 
   return (
     <motion.div
-      onMouseMove={(e) => mouseX.set(e.pageX)}
-      onMouseLeave={() => mouseX.set(Infinity)}
       initial={{ y: 100, x: '-50%', opacity: 0 }}
       animate={{ y: 0, x: '-50%', opacity: 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 25, delay: 0.3 }}
       className={cn(
         'fixed bottom-6 left-1/2 -translate-x-1/2 z-50',
-        'flex items-end gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3',
-        'max-w-[calc(100vw-2rem)] overflow-x-auto touch-scroll',
-        'rounded-2xl backdrop-blur-xl bg-dark-100/80 border border-white/10',
-        'shadow-2xl shadow-black/20',
         className
       )}
     >
-      {items.map((item, i) => (
-        <DockIcon
-          key={i}
-          mouseX={mouseX}
-          item={item}
-          isActive={activeIndex === i}
-        />
-      ))}
+      <div
+        onMouseMove={(e) => mouseX.set(e.pageX)}
+        onMouseLeave={() => mouseX.set(Infinity)}
+        className={cn(
+          'flex items-end gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3',
+          'max-w-[calc(100vw-2rem)] overflow-x-auto touch-scroll',
+          'rounded-2xl backdrop-blur-xl bg-dark-100/80 border border-white/10',
+          'shadow-2xl shadow-black/20'
+        )}
+      >
+        {items.map((item, i) => (
+          <DockIcon
+            key={i}
+            mouseX={mouseX}
+            item={item}
+            isActive={activeIndex === i}
+          />
+        ))}
+      </div>
     </motion.div>
   )
 }
